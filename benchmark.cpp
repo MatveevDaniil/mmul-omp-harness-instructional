@@ -64,8 +64,6 @@ bool check_accuracy(double *A, double *Anot, int nvalues)
 /* The benchmarking program */
 int main(int argc, char** argv) 
 {
-   std::cout << "Description:\t" << dgemm_desc << std::endl << std::endl;
-
    // check to see if there is anything on the command line:
    // -N nnnn    to define the problem size
    // -B bbbb    to define the block size
