@@ -9,20 +9,20 @@ for N in 128 512 2048; do
 
     # blas
     if [ $T -eq 1 ]; then
-      "${likwid_pref}blas" -N $N $(out_com "blas_${N}")
+      eval "${likwid_pref}blas" -N $N $(out_com "blas_${N}")
     fi
 
     # basic
-    "${likwid_pref}basic-omp" -N $N $(out_com "basic_${N}_${T}")
+    eval "${likwid_pref}basic-omp" -N $N $(out_com "basic_${N}_${T}")
 
     # blocked
     for B in 4 16; do
-      "${likwid_pref}blocked-omp" -N $N -B $B $(out_com "blocked_${N}_${T}_${B}")
+      eval "${likwid_pref}blocked-omp" -N $N -B $B $(out_com "blocked_${N}_${T}_${B}")
     done
 
     # strassen
     for L in 64 256 512; do
-      "${likwid_pref}strassen-$L-omp" -N $N $(out_com "strassen_${N}_${T}_${L}")
+      eval "${likwid_pref}strassen-$L-omp" -N $N $(out_com "strassen_${N}_${T}_${L}")
     done
 
   done
