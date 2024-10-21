@@ -97,9 +97,6 @@ int main(int argc, char** argv)
       int nthreads = omp_get_num_threads();
 
 #pragma omp critical
-      {
-         std::cout << "Hello world, I'm thread " << thread_id << " out of " << nthreads << " total threads. " << std::endl; 
-      }
 
       // Each thread must add itself to the Marker API, therefore must be
       // in parallel region
@@ -142,13 +139,10 @@ int main(int argc, char** argv)
    /* For each test size */
    for (int n : test_sizes) 
    {
-      printf("Working on problem size N=%d \n", n);
 
 #ifdef BLOCKED
-      printf("Blocked DGEMM \n");
       for (int b : block_sizes)
       {
-         printf(" Working on Block size = %d \n", b);
 #endif
 
          // allocate memory for 6 NxN matrics
@@ -184,7 +178,11 @@ int main(int argc, char** argv)
 
          std::chrono::duration<double> elapsed = end_time - start_time;
 
-         std::cout << " Elapsed time is : " << elapsed.count() << " (sec) " << std::endl;
+#ifdef BLOCKED
+         std::cout << n << " " << b << " " << elapsed.count() << std::endl;
+#else
+         std::cout << n << " " << elapsed.count() << std::endl;
+#endif
 
          reference_dgemm(n, 1.0 , Acopy, Bcopy, Ccopy);
 
