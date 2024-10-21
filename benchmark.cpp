@@ -183,7 +183,7 @@ int main(int argc, char** argv)
 
          std::chrono::duration<double> elapsed = end_time - start_time;
 
-         std::cout << n << " " << elapsed.count() << std::endl;
+         std::cerr << n << " " << elapsed.count() << std::endl;
 
          reference_dgemm(n, 1.0 , Acopy, Bcopy, Ccopy);
 
