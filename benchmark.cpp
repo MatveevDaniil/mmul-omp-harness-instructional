@@ -124,7 +124,7 @@ int main(int argc, char** argv)
 
 #ifdef BLOCKED
    // set up the block sizes
-   int default_block_sizes[] = {4, 16, 64};
+   int default_block_sizes[] = {4, 16};
    std::vector<int> block_sizes;
 
    if (cmdline_B > 0)
@@ -183,11 +183,7 @@ int main(int argc, char** argv)
 
          std::chrono::duration<double> elapsed = end_time - start_time;
 
-#ifdef BLOCKED
-         std::cout << n << " " << b << " " << elapsed.count() << std::endl;
-#else
          std::cout << n << " " << elapsed.count() << std::endl;
-#endif
 
          reference_dgemm(n, 1.0 , Acopy, Bcopy, Ccopy);
 
