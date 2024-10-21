@@ -45,7 +45,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
     double* B_block = A_block + block_size * block_size;
     double* C_block = B_block + block_size * block_size;
 #ifdef LIKWID_PERFMON
-    LIKWID_MARKER_START(MY_MARKER_REGION_NAME); 
+    LIKWID_MARKER_START("dgemm-blocked-omp-region"); 
 #endif
     #pragma omp for
     for (int i = 0; i < n / block_size; i++)
@@ -57,7 +57,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           add_from_block(n, block_size, C, C_block, i, j);
         }
 #ifdef LIKWID_PERFMON
-    LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
+    LIKWID_MARKER_STOP("dgemm-blocked-omp-region");
 #endif
   }
 }

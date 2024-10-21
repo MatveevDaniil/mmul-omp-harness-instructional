@@ -10,7 +10,7 @@ void square_dgemm(int n, double* A, double* B, double* C)
   #pragma omp parallel 
   {
 #ifdef LIKWID_PERFMON
-    LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
+    LIKWID_MARKER_START("dgemm-basic-omp-region");
 #endif
     #pragma omp for
     for (int i = 0; i < n; i++)
@@ -18,7 +18,7 @@ void square_dgemm(int n, double* A, double* B, double* C)
         for (int j = 0; j < n; j++)
           C[i * n + j] += A[i * n + k] * B[k * n + j];
 #ifdef LIKWID_PERFMON
-    LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
+    LIKWID_MARKER_STOP("dgemm-basic-omp-region");
 #endif
   }
 }
