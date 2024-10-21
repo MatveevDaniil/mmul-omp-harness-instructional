@@ -41,7 +41,8 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   double* A_block = buf.data() + 0;
   double* B_block = A_block + block_size * block_size;
   double* C_block = B_block + block_size * block_size;
-  #pragma omp parallel {
+  #pragma omp parallel 
+  {
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_START(MY_MARKER_REGION_NAME); 
 #endif

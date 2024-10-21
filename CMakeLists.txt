@@ -71,7 +71,7 @@ set(BENCHMARKS_strassen
     "strassen-512"
 )
 foreach(BENCHMARK ${BENCHMARKS_strassen})
-    add_executable(benchmark-${BENCHMARK}-omp dgemm-${BENCHMARK}-omp.cpp)
+    add_executable(benchmark-${BENCHMARK}-omp dgemm-strassen-winograd-omp/dgemm-${BENCHMARK}.cpp)
     target_link_libraries(benchmark-${BENCHMARK}-omp PRIVATE benchmark ${BLAS_LIBRARIES})
     target_link_options(benchmark-${BENCHMARK}-omp PRIVATE -fopenmp)
     if ( LIKWID_FOUND )

@@ -6,7 +6,8 @@ void seq_dgemm(int n, double* A, double* B, double* C)
 {
   for (int tmpi = 0; tmpi < n * n; tmpi++)
     C[tmpi] = 0;
-  #pragma omp parallel {
+  #pragma omp parallel 
+  {
 #ifdef LIKWID_PERFMON
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
 #endif

@@ -7,7 +7,8 @@ const char* dgemm_desc = "Basic implementation, OpenMP-enabled, three-loop dgemm
 
 void square_dgemm(int n, double* A, double* B, double* C) 
 {
-  #pragma omp parallel {
+  #pragma omp parallel 
+  {
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
 #endif
