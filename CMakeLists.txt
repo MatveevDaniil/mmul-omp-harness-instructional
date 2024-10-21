@@ -22,9 +22,7 @@ if (NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
             "module swap ${Prg-${CMAKE_C_COMPILER_ID}} PrgEnv-gnu")
 endif ()
 
-# Common library target for benchmarking.
 add_library(benchmark OBJECT benchmark.cpp)
-#target_compile_features(benchmark PRIVATE cxx_std_11)
 target_compile_options(benchmark PRIVATE -fopenmp -march=native)
 if ( LIKWID_FOUND )
     target_include_directories(benchmark PRIVATE ${LIKWID_INCLUDE_DIR})
@@ -39,10 +37,7 @@ if ( LIKWID_FOUND )
    target_compile_definitions(benchmark-basic-omp PRIVATE -DLIKWID_PERFMON)
    target_link_libraries(benchmark-basic-omp PRIVATE ${LIKWID_LIBRARIES})
 endif ()
-#target_compile_features(benchmark-basic-omp PRIVATE c_std_11 c_restrict)
 target_compile_options(benchmark-basic-omp PRIVATE -fopenmp -Wall -pedantic -march=native)
-set(BENCHMARK "basic-omp")
-configure_file(job.in job-${BENCHMARK})
 
 add_executable(benchmark-blas dgemm-blas.cpp)
 target_link_libraries(benchmark-blas PRIVATE benchmark ${BLAS_LIBRARIES})
@@ -54,8 +49,6 @@ if ( LIKWID_FOUND )
 endif ()
 target_compile_features(benchmark-blas PRIVATE c_std_11 c_restrict)
 target_compile_options(benchmark-blas PRIVATE -Wall -pedantic -march=native)
-set(BENCHMARK "blas")
-configure_file(job.in job-${BENCHMARK})
 
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
 add_library(bench-blocked-omp OBJECT benchmark.cpp)
@@ -71,7 +64,22 @@ if ( LIKWID_FOUND )
    target_link_libraries(benchmark-blocked-omp PRIVATE ${LIKWID_LIBRARIES})
 endif ()
 target_compile_options(benchmark-blocked-omp PRIVATE -fopenmp -Wall -pedantic -march=native)
-set(BENCHMARK "blocked-omp")
-configure_file(job.in job-${BENCHMARK})
+
+set(BENCHMARKS_strassen
+    "strassen-64"
+    "strassen-256"
+    "strassen-512"
+)
+foreach(BENCHMARK ${BENCHMARKS_strassen})
+    add_executable(benchmark-${BENCHMARK}-omp dgemm-${BENCHMARK}-omp.cpp)
+    target_link_libraries(benchmark-${BENCHMARK}-omp PRIVATE benchmark ${BLAS_LIBRARIES})
+    target_link_options(benchmark-${BENCHMARK}-omp PRIVATE -fopenmp)
+    if ( LIKWID_FOUND )
+      target_include_directories(benchmark-${BENCHMARK}-omp PRIVATE ${LIKWID_INCLUDE_DIR})
+      target_compile_definitions(benchmark-${BENCHMARK}-omp PRIVATE -DLIKWID_PERFMON)
+      target_link_libraries(benchmark-${BENCHMARK}-omp PRIVATE ${LIKWID_LIBRARIES})
+    endif ()
+    target_compile_options(benchmark-${BENCHMARK}-omp PRIVATE -fopenmp -Wall -pedantic -march=native)
+endforeach()
 
 # eof
