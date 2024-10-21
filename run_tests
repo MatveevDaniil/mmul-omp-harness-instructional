@@ -1,4 +1,4 @@
-likwid_pref="likwid-perfctr -g FLOPS_DP -m"
+likwid_pref="likwid-perfctr -g FLOPS_DP -m ./build/benchmark-"
 out_com() { echo "> ../results/${1}_likwid 2> ../results/${1}_rt" ; }
 chmod +x benchmark-*
 for N in 128 512 2048; do
@@ -9,20 +9,20 @@ for N in 128 512 2048; do
 
     # blas
     if [ $T -eq 1 ]; then
-      $likwid_pref ./benchmark-blas -N $N $(out_com "blas_${N}")
+      $likwid_pref ./blas -N $N $(out_com "blas_${N}")
     fi
 
     # basic
-    $likwid_pref ./benchmark-basic-omp -N $N $(out_com "basic_${N}_${T}")
+    $likwid_pref ./basic-omp -N $N $(out_com "basic_${N}_${T}")
 
     # blocked
     for B in 4 16; do
-      $likwid_pref ./benchmark-blocked-omp -N $N -B $B $(out_com "blocked_${N}_${T}_${B}")
+      $likwid_pref ./blocked-omp -N $N -B $B $(out_com "blocked_${N}_${T}_${B}")
     done
 
     # strassen
     for L in 64 256 512; do
-      $likwid_pref ./benchmark-strassen-$L-omp -N $N $(out_com "strassen_${N}_${T}_${L}")
+      $likwid_pref ./strassen-$L-omp -N $N $(out_com "strassen_${N}_${T}_${L}")
     done
 
   done
