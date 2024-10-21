@@ -38,12 +38,12 @@ void add_from_block(int n, int block_size, double *M, double *block, int block_i
 
 void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C) 
 {
-  std::vector<double> buf(3 * block_size * block_size);
-  double* A_block = buf.data() + 0;
-  double* B_block = A_block + block_size * block_size;
-  double* C_block = B_block + block_size * block_size;
   #pragma omp parallel 
   {
+    std::vector<double> buf(3 * block_size * block_size);
+    double* A_block = buf.data() + 0;
+    double* B_block = A_block + block_size * block_size;
+    double* C_block = B_block + block_size * block_size;
 #ifdef LIKWID_PERFMON
     LIKWID_MARKER_START(MY_MARKER_REGION_NAME); 
 #endif
