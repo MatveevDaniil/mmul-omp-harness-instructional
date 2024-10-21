@@ -1,5 +1,5 @@
 likwid_pref="likwid-perfctr -g FLOPS_DP -m ./build/benchmark-"
-out_com() { echo "> ../results/${1}_likwid 2> ../results/${1}_rt" ; }
+out_com() { echo "> ./results/${1}_likwid 2> ./results/${1}_rt" ; }
 chmod +x build/benchmark-*
 for N in 128 512 2048; do
   for T in 1 4 16 64; do
