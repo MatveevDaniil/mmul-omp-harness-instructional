@@ -2,14 +2,15 @@ likwid_pref="likwid-perfctr -g FLOPS_DP -m"
 out_com() { echo "> ../results/${1}_likwid 2> ../results/${1}_rt" ; }
 chmod +x benchmark-*
 for N in 128 512 2048; do
-  # blas
-  $likwid_pref ./benchmark-blas -N $N $(out_com "blas_${N}")
-
-  # threaded benchmarks
   for T in 1 4 16 64; do
     # set threads
     export OMP_NUM_THREADS=$T
     echo $OMP_NUM_THREADS
+
+    # blas
+    if [ $T -eq 1 ]; then
+      $likwid_pref ./benchmark-blas -N $N $(out_com "blas_${N}")
+    fi
 
     # basic
     $likwid_pref ./benchmark-basic-omp -N $N $(out_com "basic_${N}_${T}")
