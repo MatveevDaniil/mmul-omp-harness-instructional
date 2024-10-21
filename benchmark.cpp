@@ -136,7 +136,12 @@ int main(int argc, char** argv)
    }
 #endif
 
-   /* For each test size */
+#ifdef BLOCKED
+         std::cout << "n" << "b" << "runtime" << std::endl;
+#else
+         std::cout << "n" << "runtime" << std::endl;
+#endif
+   
    for (int n : test_sizes) 
    {
 
