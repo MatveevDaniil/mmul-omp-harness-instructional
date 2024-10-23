@@ -1,29 +1,41 @@
-likwid_pref="likwid-perfctr -g FLOPS_DP -m ./build/benchmark-"
-out_com() { echo "> ./results/${1}_likwid 2> ./results/${1}_rt" ; }
+# This part of the code is measuring the runtime of each algorithm
+mkdir -p results
 chmod +x build/benchmark-*
+echo "computing speedups"
 for N in 128 512 2048; do
   for T in 1 4 16 64; do
-    # set threads
     export OMP_NUM_THREADS=$T
-    echo $OMP_NUM_THREADS
-
+    echo "N=${N} T=${T}"
     # blas
     if [ $T -eq 1 ]; then
-      eval "${likwid_pref}blas" -N $N $(out_com "blas_${N}")
+      eval "build/benchmark-blas -N ${N} 2> ./results/blas_${N}_rt"
     fi
-
     # basic
-    eval "${likwid_pref}basic-omp" -N $N $(out_com "basic_${N}_${T}")
-
+    eval "build/benchmark-basic-omp -N ${N} 2> ./results/basic_${N}_${T}_rt"
     # blocked
     for B in 4 16; do
-      eval "${likwid_pref}blocked-omp" -N $N -B $B $(out_com "blocked_${N}_${T}_${B}")
+      eval "build/benchmark-blocked-omp -N ${N} -B ${B} 2> ./results/blocked_${N}_${T}_${B}_rt"
     done
-
     # strassen
     for L in 64 256 512; do
-      eval "${likwid_pref}strassen-$L-omp" -N $N $(out_com "strassen_${N}_${T}_${L}")
+      eval "build/benchmark-strassen-${L}-omp -N ${N} 2> ./results/strassen_${N}_${T}_${L}_rt"
     done
+  done
+done
 
+# Now we will measure the memory and instructions number of each algorithm
+export OMP_NUM_THREADS=1
+echo "computing performance counters"
+for N in 128 512 2048; do
+  for perf_counter in "FLOPS_DP" "L2CACHE" "L3CACHE"; do
+    echo "N=${N} perf_counter=${perf_counter}"
+    # blas
+    eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-blas -N ${N} > ./results/blas_${N}_${perf_counter}"
+    # basic
+    eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-basic-omp -N ${N} > ./results/basic_${N}_${perf_counter}"
+    # blocked
+    for B in 4 16; do
+      eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-blocked-omp -N ${N} -B ${B} > ./results/blocked_${N}_${B}_${perf_counter}"
+    done
   done
 done
