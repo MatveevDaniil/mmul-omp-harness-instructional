@@ -2,8 +2,8 @@
 mkdir -p results
 chmod +x build/benchmark-*
 echo "computing speedups"
-for T in 128 ; do # for N in 128 512 2048; do
-  for T in 4 ; do # for T in 1 4 16 64; do
+for N in 128 512 2048; do
+  for T in 1 4 16 64; do
     export OMP_NUM_THREADS=$T
     echo "N=${N} T=${T}"
     # blas
@@ -14,11 +14,11 @@ for T in 128 ; do # for N in 128 512 2048; do
     eval "build/benchmark-basic-omp -N ${N} 2> ./results/basic_${N}_${T}_rt"
     # blocked
     for B in 4 16; do
-      eval "build/benchmark-blocked-omp -N ${N} -B ${B} 2> ./results/blocked_${N}_${T}_${B}_rt"
+      eval "build/benchmark-blocked-omp -N ${N} -B ${B} 2> ./results/blocked-${B}_${N}_${T}_rt"
     done
     # strassen
     for L in 64 256 512; do
-      eval "build/benchmark-strassen-${L}-omp -N ${N} 2> ./results/strassen_${N}_${T}_${L}_rt"
+      eval "build/benchmark-strassen-${L}-omp -N ${N} 2> ./results/strassen-${L}_${N}_${T}_rt"
     done
   done
 done
@@ -29,8 +29,8 @@ spack env activate gcc
 spack load likwid
 export OMP_NUM_THREADS=1
 echo "computing performance counters"
-for N in 128 ; do # for N in 128 512 2048; do
-  for perf_counter in "FLOPS_DP" ; do # for perf_counter in "FLOPS_DP" "L2CACHE" "L3CACHE"; do
+for N in 128 512 2048; do
+  for perf_counter in "FLOPS_DP" "L2CACHE" "L3CACHE"; do
     echo "N=${N} perf_counter=${perf_counter}"
     # blas
     eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-blas -N ${N} > ./results/blas_${N}_${perf_counter}"
