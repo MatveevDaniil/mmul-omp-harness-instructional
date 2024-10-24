@@ -86,18 +86,21 @@ def plot_runtimes(
     results = parse_rt(method, N, [threads_num])[threads_num]
     if mode == 'Runtime (s)':
       results = [results[n] for n in N]
+      ylabel = mode
     elif mode == 'FLOPs':
       results = [2 * n ** 3 / results[n] / 1e9 for n in N]
+      ylabel  = 'Theoretical MFLOPs'
     elif mode == 'Speedup':
       results_1 = parse_rt(method, N, [1])[1]
       results = [results_1[n] / results[n] for n in N]
+      ylabel = mode
     else:
       raise ValueError(f"Unknown mode {mode}")
     plt.scatter(N, results, label=f"{method}, {threads_num} threads", marker=marker_dict[method], color=colors[idx])
     plt.plot(N, results, color=colors[idx])
   plt.xlabel('N')
-  plt.ylabel(f'{mode}')
-  plt.title(f'{mode} vs N')
+  plt.ylabel(ylabel)
+  plt.title(f'{ylabel} vs N')
   plt.legend()
   plt.savefig(f'graphs_tables/{figname}.png', dpi=300)
   plt.close()
