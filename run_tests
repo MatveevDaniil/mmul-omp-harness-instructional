@@ -8,7 +8,7 @@ for N in 128 512 2048; do
     echo "N=${N} T=${T}"
     # blas
     if [ $T -eq 1 ]; then
-      eval "build/benchmark-blas -N ${N} 2> ./results/blas_${N}_rt"
+      eval "build/benchmark-blas -N ${N} 2> ./results/blas_${N}_1_rt"
     fi
     # basic
     eval "build/benchmark-basic-omp -N ${N} 2> ./results/basic_${N}_${T}_rt"
@@ -38,7 +38,7 @@ for N in 128 512 2048; do
     eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-basic-omp -N ${N} > ./results/basic_${N}_${perf_counter}"
     # blocked
     for B in 4 16; do
-      eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-blocked-omp -N ${N} -B ${B} > ./results/blocked_${N}_${B}_${perf_counter}"
+      eval "likwid-perfctr -g ${perf_counter} -m -C N:0-0 ./build/benchmark-blocked-omp -N ${N} -B ${B} > ./results/blocked-${B}_${N}_${perf_counter}"
     done
   done
 done

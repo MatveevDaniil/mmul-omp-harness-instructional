@@ -1,0 +1,9 @@
+\begin{tabular}{lrrr}
+\toprule
+ & basic & blocked-4 & blocked-16 \\
+\midrule
+128 & 3.3 & 33.2 & 8.3 \\
+512 & 3.3 & 37.4 & 9.4 \\
+2048 & 3.2 & 37.8 & 9.5 \\
+\bottomrule
+\end{tabular}
